@@ -59,3 +59,38 @@ html {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
+
+/* ─── Syntax highlighting (Atom One Dark — always on dark bg) ─── */
+.hljs                               { color: #abb2bf; }
+.hljs-keyword,
+.hljs-operator,
+.hljs-selector-tag                  { color: #c678dd; }
+.hljs-function,
+.hljs-title,
+.hljs-title.function_               { color: #61afef; }
+.hljs-string,
+.hljs-template-string,
+.hljs-attr,
+.hljs-addition                      { color: #98c379; }
+.hljs-number,
+.hljs-literal,
+.hljs-boolean                       { color: #d19a66; }
+.hljs-comment                       { color: #5c6370; font-style: italic; }
+.hljs-variable,
+.hljs-template-variable,
+.hljs-params,
+.hljs-deletion                      { color: #e06c75; }
+.hljs-type,
+.hljs-class,
+.hljs-built_in                      { color: #e5c07b; }
+.hljs-property                      { color: #e06c75; }
+.hljs-tag,
+.hljs-name                          { color: #e06c75; }
+.hljs-attribute                     { color: #d19a66; }
+.hljs-symbol,
+.hljs-regexp                        { color: #56b6c2; }
+.hljs-meta                          { color: #61afef; }
+.hljs-selector-id,
+.hljs-selector-class                { color: #e06c75; }
+.hljs-emphasis                      { font-style: italic; }
+.hljs-strong                        { font-weight: bold; }
