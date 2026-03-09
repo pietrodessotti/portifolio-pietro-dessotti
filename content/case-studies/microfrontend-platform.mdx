@@ -1,0 +1,145 @@
+---
+title: "Migrating to Microfrontends: Enabling 3 Teams to Ship Independently"
+description: "How we decomposed a monolithic React application into a microfrontend architecture that let multiple product teams deploy independently without coordination overhead."
+publishedAt: "2025-04-15"
+tags: ["Microfrontends", "React", "Architecture", "Module Federation", "Team Scaling"]
+role: "Senior Frontend Engineer"
+company: "Confidential"
+duration: "6 months"
+teamSize: "5 engineers across 3 teams"
+impact:
+  - "3 teams now deploy independently with zero cross-team coordination"
+  - "Frontend deployment frequency increased from weekly to daily"
+  - "Reduced PR cycle time by ~40% through smaller, team-scoped changes"
+  - "Zero production incidents caused by cross-team frontend conflicts post-migration"
+technologies: ["React", "TypeScript", "Webpack Module Federation", "NestJS BFF", "GitHub Actions", "Vercel"]
+featured: true
+---
+
+## Context
+
+A large digital product had grown organically over three years into a monolithic React application owned by a single team. As the product expanded, two new teams were formed to own distinct product areas — but they were all working in the same codebase, deploying together, and blocking each other constantly.
+
+The problem was organizational before it was technical. Three teams. One deployment. Every release required coordination. A bug in one team's code could delay another's launch.
+
+## The Problem
+
+The coordination overhead was significant:
+
+- A single deployment pipeline meant any team could block everyone else
+- Feature branches had to be carefully ordered to avoid conflicts
+- A minor bug in one product area required a hotfix that affected all areas
+- Engineers were hesitant to refactor code they didn't own
+
+The solution wasn't more process — it was different architecture.
+
+## Approach
+
+### Discovery: Defining the Boundaries
+
+Before writing a single line of code, I facilitated boundary-mapping sessions with all three teams. The goal was to answer: "Where does your product responsibility begin and end?"
+
+This sounds simple, but it surfaces real tensions. Shared UI elements (navigation, authentication flows, notifications) don't belong to any one team — yet every team needs them. We established a "platform" team responsibility for these shared surfaces.
+
+The outcome was a clear ownership matrix:
+- **Shell / Platform team**: routing, auth, navigation, shared state
+- **Team A**: product catalog and search experience
+- **Team B**: checkout and payment flows
+
+### Architecture Decision: Module Federation
+
+We evaluated several approaches: iframes (simple but limited), single-spa (powerful but complex), and Webpack Module Federation. We chose Module Federation because:
+
+1. React components compose naturally without iframe boundaries
+2. Shared dependencies (React, design system) are loaded once
+3. The build tooling was already Webpack-based
+
+```javascript
+// Team A's webpack config (catalog microfrontend)
+new ModuleFederationPlugin({
+  name: 'catalog',
+  filename: 'remoteEntry.js',
+  exposes: {
+    './ProductSearch': './src/components/ProductSearch',
+    './ProductDetail': './src/components/ProductDetail',
+  },
+  shared: {
+    react: { singleton: true, requiredVersion: '^18.0.0' },
+    'react-dom': { singleton: true, requiredVersion: '^18.0.0' },
+    '@company/design-system': { singleton: true },
+  },
+})
+```
+
+### The Shell Application
+
+The shell is deliberately thin — it owns routing and authentication only. It knows the URLs of each microfrontend's `remoteEntry.js` and loads them dynamically:
+
+```typescript
+// Shell: lazy load remote component
+const ProductSearch = React.lazy(async () => {
+  const catalog = await import('catalog/ProductSearch')
+  return { default: catalog.ProductSearch }
+})
+
+// Shell routing
+<Route path="/catalog/*" element={
+  <Suspense fallback={<PageLoader />}>
+    <ProductSearch />
+  </Suspense>
+} />
+```
+
+### Shared State: Less is More
+
+One of our most important decisions was minimizing shared state. We identified three things that genuinely needed to be shared:
+
+1. **Auth state** — current user and session token (via context in shell)
+2. **Cart state** — item count for the navigation badge (via a lightweight event bus)
+3. **Feature flags** — evaluated at the shell level, passed down
+
+Everything else lives within each team's boundary. This was a cultural challenge as much as a technical one — teams had to resist the temptation to share state for convenience.
+
+### The BFF Layer
+
+Each team also owned a BFF (Backend for Frontend) service. This meant the catalog team controlled their own API contract and could evolve it without coordinating with the checkout team's backend dependencies.
+
+```
+Shell → Catalog MFE → Catalog BFF → Product Service
+Shell → Checkout MFE → Checkout BFF → Payment Service / Order Service
+```
+
+## Migration Strategy
+
+We didn't rewrite from scratch. We used a strangler fig approach:
+
+1. Extract the shell first (routing + auth)
+2. Move Team B's checkout flow into its own microfrontend (lowest coupling)
+3. Move Team A's catalog (more dependencies to untangle)
+4. Decommission the monolith
+
+This took six months. Teams shipped features throughout — there was no "migration freeze."
+
+## Technical Challenges
+
+**CSS isolation**: Without shadow DOM, CSS from one microfrontend could leak into another. We solved this by using CSS Modules with team-specific prefixes and Tailwind with a custom prefix per team.
+
+**Type sharing**: Shared TypeScript interfaces (like the `User` type) need to live somewhere both teams can import without creating circular dependencies. We published a `@company/types` package.
+
+**Error isolation**: If the catalog MFE fails to load, the checkout flow should still work. We wrapped each remote import in an error boundary with a graceful fallback.
+
+## Outcome
+
+Six months after starting, three teams deployed independently for the first time. The first week, Team B shipped a checkout improvement on Tuesday and Team A shipped a catalog feature on Thursday — without a single Slack message between them.
+
+Deployment frequency increased from weekly coordinated releases to daily team-driven deploys. PR cycle time dropped because each team only reviewed their own bounded context.
+
+## Learnings
+
+**Organizational alignment before technical implementation.** We spent three weeks on boundary mapping before writing code. That investment prevented months of rework.
+
+**Share as little as possible.** Every shared piece of state or component is a dependency between teams. Be ruthless about what actually needs to be shared.
+
+**The shell is a liability if it grows.** There's constant pressure to add things to the shell because "everyone needs it." Resist. If something truly belongs to everyone, it belongs in the design system or a shared package — not the shell runtime.
+
+**Observability per team, not per deployment.** Each team needed their own dashboards and alerts. Shared monitoring would have recreated the coordination overhead we were trying to eliminate.

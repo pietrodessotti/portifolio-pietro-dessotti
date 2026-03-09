@@ -1,0 +1,96 @@
+---
+title: "TypeScript Strict Mode: How to Adopt It Without Breaking Everything"
+description: "A practical guide to incrementally enabling TypeScript strict mode in an existing codebase, with the lessons learned from doing it across multiple projects."
+publishedAt: "2025-08-20"
+tags: ["TypeScript", "DX", "Best Practices", "Refactoring"]
+featured: false
+---
+
+TypeScript's strict mode is one of the highest-leverage investments you can make in a codebase. It catches entire categories of bugs at compile time and makes implicit assumptions explicit. But enabling it on an existing project can feel like opening Pandora's box.
+
+Here's how to do it incrementally and sustainably.
+
+## Why Strict Mode Matters
+
+Without strict mode, TypeScript is remarkably permissive. With `strict: true`, you get:
+
+- `strictNullChecks` — no implicit `undefined` or `null` where a value is expected
+- `noImplicitAny` — no implicit `any` type inference
+- `strictFunctionTypes` — correct variance on function parameters
+- `strictPropertyInitialization` — class properties must be initialized
+
+Each of these catches real bugs. I've personally seen `strictNullChecks` catch production crashes that had slipped through code review and testing.
+
+## The Incremental Approach
+
+Don't enable `strict: true` in one commit on a large codebase. You'll generate hundreds of errors and the PR becomes a nightmare to review.
+
+Instead, enable flags one at a time:
+
+```json
+// tsconfig.json
+{
+  "compilerOptions": {
+    "strictNullChecks": true,
+    // Add these one by one over several weeks:
+    // "noImplicitAny": true,
+    // "strictFunctionTypes": true,
+    // "strictPropertyInitialization": true
+  }
+}
+```
+
+Fix all errors for each flag before enabling the next. This makes the changes reviewable and keeps the team from drowning.
+
+## The `// @ts-strict-ignore` Escape Hatch
+
+For large files you can't refactor immediately, use file-level directives to opt out temporarily:
+
+```typescript
+// @ts-strict-ignore
+// This file needs strict mode migration - tracked in TECH-4521
+```
+
+This lets you enable `strict: true` globally while deferring specific files. Track these with comments or a simple text file in the repo — and actually come back to them.
+
+## Common Patterns You'll Fix
+
+**1. Optional chaining for nullable access:**
+
+```typescript
+// Before: TypeScript didn't catch this
+const name = user.profile.name
+
+// After: strictNullChecks forces you to handle null
+const name = user?.profile?.name ?? 'Anonymous'
+```
+
+**2. Type guards for union types:**
+
+```typescript
+// Before: implicit any
+function handleEvent(event) {
+  console.log(event.target.value)
+}
+
+// After: explicit and safe
+function handleEvent(event: React.ChangeEvent<HTMLInputElement>) {
+  console.log(event.target.value)
+}
+```
+
+## The Culture Shift
+
+The technical changes are straightforward. The harder part is the team culture shift.
+
+Engineers who are used to TypeScript as a "JavaScript with syntax" tool need to start treating types as a design tool. This means:
+
+- Defining types before writing implementation
+- Using union types to model state machines
+- Avoiding `any` even when it's tempting
+
+The payoff is compounding: stricter types make refactoring safer, which means you refactor more, which means the codebase degrades slower over time.
+
+## Start Today
+
+If you're not on strict mode, enable `strictNullChecks` today. Fix the errors. Notice how many of them represent real potential bugs. That's your argument for the next flag.

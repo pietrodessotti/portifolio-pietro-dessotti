@@ -1,0 +1,95 @@
+---
+title: "The BFF Pattern: How Frontend Teams Can Own Their API Layer"
+description: "The Backend-for-Frontend pattern separates concerns, reduces coupling, and empowers frontend teams to ship independently. Here's how to think about and implement it."
+publishedAt: "2025-06-10"
+tags: ["Architecture", "BFF", "Node.js", "NestJS", "API Design"]
+featured: true
+---
+
+One of the most impactful architectural changes I've contributed to was introducing a Backend-for-Frontend (BFF) layer. It fundamentally changed how our frontend teams operated — and not just technically.
+
+## The Problem BFF Solves
+
+Imagine a React application consuming a REST API built for mobile clients. The API returns large payloads optimized for a different use case. The frontend has to:
+
+- Fetch multiple endpoints and combine the data
+- Transform deeply nested objects into shapes the UI actually needs
+- Add authentication headers on every request
+- Handle different error formats from different services
+
+This is frontend business logic leaking into application code. Every UI change requires negotiating with backend teams. Shipping speed suffers.
+
+## The BFF Mental Model
+
+A BFF is a server-side layer owned by the **frontend team**. It sits between the client and upstream services, and it's purpose-built for one client: your frontend.
+
+```
+React App → BFF (owned by frontend team) → Upstream APIs / Microservices
+```
+
+The key insight: **the frontend team owns this API**. No negotiation. No waiting. You need a new endpoint shaped exactly how your component expects it? You build it in your BFF.
+
+## A NestJS BFF in Practice
+
+Here's what a typical BFF controller looks like in NestJS:
+
+```typescript
+// bff/src/dashboard/dashboard.controller.ts
+@Controller('dashboard')
+export class DashboardController {
+  constructor(private readonly dashboardService: DashboardService) {}
+
+  @Get()
+  @UseGuards(AuthGuard)
+  async getDashboard(@User() user: AuthUser) {
+    // Aggregate data from multiple upstream services
+    const [profile, metrics, notifications] = await Promise.all([
+      this.dashboardService.getProfile(user.id),
+      this.dashboardService.getMetrics(user.id),
+      this.dashboardService.getNotifications(user.id),
+    ])
+
+    // Return exactly the shape the UI needs
+    return {
+      user: {
+        name: profile.displayName,
+        avatarUrl: profile.picture,
+      },
+      stats: metrics.summary,
+      hasUnread: notifications.some((n) => !n.read),
+    }
+  }
+}
+```
+
+The frontend gets exactly what it needs in a single request. The complexity of orchestrating multiple upstream calls is hidden in the BFF.
+
+## Authentication is a Natural Fit
+
+The BFF is a great place to handle session management. The client sends a session cookie; the BFF validates it and exchanges it for the appropriate upstream tokens. The React app never touches raw JWTs or API keys.
+
+```typescript
+// BFF handles token exchange
+async function getUpstreamToken(sessionToken: string): Promise<string> {
+  const session = await validateSession(sessionToken)
+  return exchangeForUpstreamToken(session.userId)
+}
+```
+
+## What About GraphQL?
+
+GraphQL is a natural fit for BFFs if you have many different consumers (web, mobile, TV apps) that each need different data shapes. For a single frontend application, a REST BFF is often simpler and sufficient.
+
+## When Not to Use a BFF
+
+- **Single team building both frontend and backend** — just build the API right the first time
+- **Simple CRUD applications** — the BFF adds overhead without enough benefit
+- **Early-stage products** — optimize for speed, not architecture
+
+The BFF pattern adds a service to maintain. Make sure the autonomy and decoupling benefits outweigh that cost for your team's size and product complexity.
+
+## The Organizational Impact
+
+The technical benefits are real, but the organizational change is more significant. Frontend teams stop being blocked by backend teams. They can iterate on the API contract at their own pace. Product decisions that used to require two-team coordination can now be made unilaterally.
+
+That's the real power of the BFF pattern.

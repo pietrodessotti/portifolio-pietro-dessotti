@@ -1,0 +1,109 @@
+---
+title: "Building a Cross-Team Design System from Scratch"
+description: "How we unified the visual language and component library across multiple product teams, reducing UI inconsistency and accelerating feature development."
+publishedAt: "2025-09-01"
+tags: ["Design Systems", "React", "TypeScript", "Storybook", "DX"]
+role: "Senior Frontend Engineer / Tech Lead"
+company: "Confidential"
+duration: "8 months"
+teamSize: "3 engineers + 1 designer"
+impact:
+  - "Eliminated 40+ duplicate component implementations across teams"
+  - "Reduced time-to-UI for new features by approximately 60%"
+  - "Adopted by 6 product teams within 3 months of launch"
+  - "Zero visual regressions after migration using snapshot testing"
+technologies: ["React", "TypeScript", "Tailwind CSS", "Storybook", "Style Dictionary", "Changesets"]
+featured: true
+---
+
+## Context
+
+Multiple product teams were independently building UI components. Buttons in three different styles. Four different modal implementations. Date pickers that looked nothing alike. Every team was solving the same problems in isolation.
+
+Beyond the visual inconsistency, this created real operational overhead: a bug fix in one team's button component never made it to the others. A design decision required updating code in five separate repositories.
+
+## The Problem
+
+The root cause wasn't a lack of design skill or good intentions — it was the absence of a shared foundation. Each team had their own interpretation of the design language, their own component conventions, and their own release cycle.
+
+We needed:
+1. A single source of truth for design tokens (colors, spacing, typography)
+2. A shared component library all teams could depend on and contribute to
+3. Clear ownership, versioning, and contribution guidelines
+
+## Approach
+
+### Phase 1: Audit and Alignment (Weeks 1-4)
+
+Before writing a line of code, I spent three weeks auditing the existing components across all teams. I catalogued every button, input, modal, and card variant — documenting which were truly different, which were duplicates, and which could be consolidated.
+
+This produced a component inventory spreadsheet that became the foundation for our migration plan. Crucially, I brought all teams into a design system working group so no one felt like something was being done *to* them.
+
+### Phase 2: Token Foundation (Weeks 5-8)
+
+We used **Style Dictionary** to define design tokens as a single source of truth, then generated platform-specific outputs from them:
+
+```json
+// tokens/color.json
+{
+  "color": {
+    "brand": {
+      "primary": { "value": "#0070f3" },
+      "secondary": { "value": "#7928ca" }
+    },
+    "text": {
+      "primary": { "value": "{color.zinc.900}" },
+      "muted": { "value": "{color.zinc.500}" }
+    }
+  }
+}
+```
+
+This meant when the design team changed the primary brand color, every team's components updated in the next release — automatically.
+
+### Phase 3: Component Library (Weeks 9-20)
+
+We built the component library in a separate package using React and TypeScript, with Storybook as the documentation and development environment.
+
+Key architectural decisions:
+
+**Headless-first for complex components.** For things like dropdowns and dialogs, we built on [Radix UI](https://www.radix-ui.com/) primitives, which gave us accessibility for free while keeping full styling control.
+
+**Strict API design.** Every component API went through review before implementation. We asked: "Is this prop name obvious? Will it be backwards-compatible in six months?" We used TypeScript discriminated unions to make invalid states unrepresentable:
+
+```typescript
+// Invalid: cannot have both href and onClick as primary actions
+type ButtonProps =
+  | { href: string; onClick?: never }
+  | { href?: never; onClick: () => void }
+```
+
+**Visual regression testing.** Every component had Storybook stories, and we ran Chromatic on every PR to catch visual regressions before they reached production.
+
+### Phase 4: Migration and Adoption (Weeks 21-32)
+
+Migration used a strangler fig pattern — new code used the design system, old code was migrated incrementally. We never had a "migration sprint" that blocked feature work.
+
+To accelerate adoption, I ran bi-weekly office hours where any engineer could get help migrating their components or contributing new ones.
+
+## Technical Decisions
+
+**Monorepo with Changesets for versioning.** Teams could depend on specific versions and upgrade at their own pace. Breaking changes were documented clearly.
+
+**CSS custom properties for theming.** Instead of runtime theme switching via JavaScript, we used CSS custom properties. This meant zero flash on theme change and support for system preference detection with a single `@media (prefers-color-scheme: dark)`.
+
+**Composition over configuration.** Instead of a single `<Button>` component with 30 props, we had `<Button>`, `<IconButton>`, `<LinkButton>` — each with a focused API. Less flexibility, more clarity.
+
+## Outcome
+
+The design system launched to all teams eight months after the project began. Within three months, six product teams had migrated their primary flows to use it.
+
+The most meaningful metric: engineers stopped asking "which button should I use here?" in Slack. The system made the right choice obvious.
+
+## Learnings
+
+**Documentation is a product.** We invested as much in Storybook stories and usage guidelines as in the components themselves. Teams adopted the system faster when they could understand it without asking anyone.
+
+**Governance matters as much as technology.** We established a clear RFC process for new components, ownership guidelines, and deprecation policies. Without this, the system would have grown chaotic.
+
+**Small teams move faster.** Three engineers is the right size for a design system team. Any larger and the coordination overhead slows you down more than the extra hands help.
