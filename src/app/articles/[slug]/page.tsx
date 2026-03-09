@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Clock, Calendar } from 'lucide-react'
 import { getAllArticles, getArticleBySlug } from '@/lib/mdx'
+import { SITE_URL } from '@/lib/site'
 import { MDXRenderer } from '@/components/mdx/MDXRenderer'
 import { Tag } from '@/components/ui/Tag'
 import { formatDate } from '@/lib/utils'
@@ -35,7 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-const BASE_URL = 'https://pietrodessotti.dev'
+const BASE_URL = SITE_URL
 
 export default async function ArticlePage({ params }: Props) {
   const { slug } = await params

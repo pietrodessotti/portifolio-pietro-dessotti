@@ -18,7 +18,7 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://pietrodessotti.dev'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://pietrodessotti.dev'),
   title: {
     default: 'Pietro Dessotti — Senior Frontend Engineer',
     template: '%s | Pietro Dessotti',

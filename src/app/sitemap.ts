@@ -1,7 +1,8 @@
 import type { MetadataRoute } from 'next'
 import { getAllArticles, getAllCaseStudies } from '@/lib/mdx'
+import { SITE_URL } from '@/lib/site'
 
-const BASE_URL = 'https://pietrodessotti.dev'
+const BASE_URL = SITE_URL
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const articles = await getAllArticles()

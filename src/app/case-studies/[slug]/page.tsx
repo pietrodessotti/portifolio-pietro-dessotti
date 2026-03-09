@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Users, Clock, Building2, Briefcase } from 'lucide-react'
 import { getAllCaseStudies, getCaseStudyBySlug } from '@/lib/mdx'
+import { SITE_URL } from '@/lib/site'
 import { MDXRenderer } from '@/components/mdx/MDXRenderer'
 import { Tag } from '@/components/ui/Tag'
 import { Badge } from '@/components/ui/Badge'
@@ -33,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-const BASE_URL = 'https://pietrodessotti.dev'
+const BASE_URL = SITE_URL
 
 export default async function CaseStudyPage({ params }: Props) {
   const { slug } = await params
