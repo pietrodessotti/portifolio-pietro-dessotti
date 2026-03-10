@@ -51,8 +51,8 @@ export function HeroSection() {
             <Mail className="h-4 w-4" />
           </Button>
           <Button
-            href="/resume/pietro-dessotti-resume.pdf"
-            download="pietro-dessotti-resume.pdf"
+            href="/resume/Pietro_Dessotti_Senior_Frontend_Engineer.pdf"
+            download="Pietro_Dessotti_Senior_Frontend_Engineer.pdf"
             variant="ghost"
             size="lg"
           >

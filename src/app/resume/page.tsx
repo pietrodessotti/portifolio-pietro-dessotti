@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
-import { Download, ExternalLink } from 'lucide-react'
+import { Download, ExternalLink, RefreshCw } from 'lucide-react'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { Button } from '@/components/ui/Button'
+
+const LAST_UPDATED = 'March 10, 2026'
 
 export const metadata: Metadata = {
   title: 'Resume',
@@ -9,7 +11,7 @@ export const metadata: Metadata = {
     'Download or view the professional resume of Pietro Dessotti, Senior Frontend Engineer specialized in React, TypeScript and scalable frontend architecture.',
 }
 
-const PDF = '/resume/pietro-dessotti-resume.pdf'
+const PDF = '/resume/Pietro_Dessotti_Senior_Frontend_Engineer.pdf'
 
 export default function ResumePage() {
   return (
@@ -21,6 +23,11 @@ export default function ResumePage() {
         className="mb-10"
       />
 
+      <p className="mb-8 inline-flex items-center gap-2 text-sm text-[var(--muted)]">
+        <RefreshCw className="h-3.5 w-3.5" />
+        Last updated: {LAST_UPDATED}
+      </p>
+
       <div className="flex flex-wrap gap-3">
         <Button href={PDF} external size="lg">
           View Resume
@@ -28,7 +35,7 @@ export default function ResumePage() {
         </Button>
         <Button
           href={PDF}
-          download="pietro-dessotti-resume.pdf"
+          download="Pietro_Dessotti_Senior_Frontend_Engineer.pdf"
           variant="secondary"
           size="lg"
         >
