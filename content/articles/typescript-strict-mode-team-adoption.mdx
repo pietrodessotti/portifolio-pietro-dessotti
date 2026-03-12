@@ -14,10 +14,10 @@ Here's how to do it incrementally and sustainably.
 
 Without strict mode, TypeScript is remarkably permissive. With `strict: true`, you get:
 
-- `strictNullChecks` — no implicit `undefined` or `null` where a value is expected
-- `noImplicitAny` — no implicit `any` type inference
-- `strictFunctionTypes` — correct variance on function parameters
-- `strictPropertyInitialization` — class properties must be initialized
+- `strictNullChecks`: no implicit `undefined` or `null` where a value is expected
+- `noImplicitAny`: no implicit `any` type inference
+- `strictFunctionTypes`: correct variance on function parameters
+- `strictPropertyInitialization`: class properties must be initialized
 
 Each of these catches real bugs. I've personally seen `strictNullChecks` catch production crashes that had slipped through code review and testing.
 
@@ -51,7 +51,7 @@ For large files you can't refactor immediately, use file-level directives to opt
 // This file needs strict mode migration - tracked in TECH-4521
 ```
 
-This lets you enable `strict: true` globally while deferring specific files. Track these with comments or a simple text file in the repo — and actually come back to them.
+This lets you enable strict: true globally while deferring specific files. Track these with comments or a simple text file in the repo, and actually come back to them.
 
 ## Common Patterns You'll Fix
 

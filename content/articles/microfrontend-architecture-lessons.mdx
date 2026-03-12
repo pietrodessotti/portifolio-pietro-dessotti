@@ -10,13 +10,13 @@ After contributing to over 20 product initiatives across multiple engineering te
 
 ## What Microfrontends Actually Solve
 
-Microfrontends don't solve a technical problem — they solve an organizational one. The core value proposition is **team autonomy**: the ability for multiple teams to own, deploy, and evolve their own UI surfaces without coordinating with every other team on every release.
+Microfrontends don't solve a technical problem. They solve an organizational one. The core value proposition is **team autonomy**: the ability for multiple teams to own, deploy, and evolve their own UI surfaces without coordinating with every other team on every release.
 
 If you have one team, you don't need microfrontends. If you have ten teams shipping to the same frontend codebase, you almost certainly do.
 
 ## The Deployment Boundary is the Real Benefit
 
-Most people focus on technology when discussing microfrontends — module federation, single-spa, iframes. But the technology is secondary. The critical thing is the **deployment boundary**.
+Most people focus on technology when discussing microfrontends: module federation, single-spa, and iframes. But the technology is secondary. The critical thing is the **deployment boundary**.
 
 Each team controls their own deployment pipeline. A bug in Team A's checkout flow doesn't block Team B from shipping new features. This alone can dramatically change how teams operate.
 
@@ -40,15 +40,15 @@ new ModuleFederationPlugin({
 
 One of the first challenges you'll face: each microfrontend may end up with a slightly different version of your component library. Team A upgrades the button. Team B doesn't. Now your users see two different button styles on the same page.
 
-The solution isn't forcing everyone to update at the same time — it's designing your shared packages to be stable and versioning them carefully. Treat your design system like a public API.
+The solution isn't forcing everyone to update at the same time. It's designing your shared packages to be stable and versioning them carefully. Treat your design system like a public API.
 
 ## When It Goes Wrong
 
 I've seen microfrontends fail in two main ways:
 
-**1. Premature decomposition.** Teams split the frontend before they had clear team ownership boundaries. The result is 12 microfrontends maintained by 3 people — complexity without benefit.
+**1. Premature decomposition.** Teams split the frontend before they had clear team ownership boundaries. The result is 12 microfrontends maintained by 3 people. Complexity without benefit.
 
-**2. Shared state hell.** Teams try to share too much state across boundaries — user sessions, shopping carts, UI preferences. Each new shared concern erodes the autonomy you were trying to achieve.
+**2. Shared state hell.** Teams try to share too much state across boundaries, such as user sessions, shopping carts, and UI preferences. Each new shared concern erodes the autonomy you were trying to achieve.
 
 The rule of thumb: if two microfrontends need to communicate frequently, they may belong in the same application.
 
@@ -56,9 +56,9 @@ The rule of thumb: if two microfrontends need to communicate frequently, they ma
 
 Starting fresh today, I'd:
 
-1. **Start with a monorepo, not microfrontends** — extract only when team growth demands it
-2. **Define ownership boundaries before technical boundaries** — Conway's Law applies
-3. **Invest heavily in the design system first** — it's the foundation everything else sits on
-4. **Keep the shell application thin** — routing and authentication only
+1. **Start with a monorepo, not microfrontends.** Extract only when team growth demands it.
+2. **Define ownership boundaries before technical boundaries.** Conway's Law applies.
+3. **Invest heavily in the design system first.** It's the foundation everything else sits on.
+4. **Keep the shell application thin.** Limit it to routing and authentication.
 
 Microfrontends are a powerful tool. But like any powerful tool, they require understanding the problem before reaching for the solution.
