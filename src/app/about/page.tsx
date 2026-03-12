@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { CheckCircle2 } from "lucide-react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
@@ -50,9 +51,24 @@ export default function AboutPage() {
         {/* Sidebar */}
         <aside>
           <div className="sticky top-24">
-            <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-2xl bg-[var(--muted-bg)] text-4xl font-bold text-[var(--accent)]">
-              PH
+            {/* Profile image — full-width, fades into background */}
+            <div className="relative mb-6 w-full overflow-hidden" style={{ aspectRatio: '3/4' }}>
+              <Image
+                src="/profile.png"
+                alt="Pietro Dessotti"
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 280px"
+                className="object-cover object-top"
+                style={{
+                  maskImage: 'linear-gradient(to bottom, black 40%, transparent 100%)',
+                  WebkitMaskImage: 'linear-gradient(to bottom, black 40%, transparent 100%)',
+                  mixBlendMode: 'luminosity',
+                  opacity: 0.75,
+                }}
+              />
             </div>
+
             <h1 className="text-2xl font-bold text-[var(--foreground)]">
               Pietro Dessotti
             </h1>
@@ -65,8 +81,8 @@ export default function AboutPage() {
               <Button href="/contact" size="sm">
                 Get in touch
               </Button>
-              <Button href="/case-studies" variant="secondary" size="sm">
-                View my work
+              <Button href="/articles" variant="secondary" size="sm">
+                Read my articles
               </Button>
             </div>
           </div>
