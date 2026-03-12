@@ -42,6 +42,7 @@ export const skillCategories: SkillCategory[] = [
     skills: [
       { name: 'Redux', level: 'advanced' },
       { name: 'Zustand', level: 'advanced' },
+      { name: 'Jotai', level: 'advanced' },
       { name: 'React Context', level: 'advanced' },
       { name: 'Jest', level: 'advanced' },
       { name: 'React Testing Library', level: 'advanced' },

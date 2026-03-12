@@ -14,7 +14,7 @@ export const architectureTopics: ArchitectureTopic[] = [
     icon: 'Layers',
     title: 'React Architecture',
     summary:
-      'Patterns for building component hierarchies that scale — compound components, render props, composition over configuration, and co-locating state as close to its consumer as possible.',
+      'Approaches for structuring React applications that remain understandable as they grow. I focus on patterns like compound components, state colocation, clear context boundaries, and component composition.',
     concepts: [
       'Compound Components',
       'State Colocation',
@@ -31,7 +31,7 @@ export const architectureTopics: ArchitectureTopic[] = [
     icon: 'Network',
     title: 'Microfrontends',
     summary:
-      'Decomposing frontend monoliths so independent teams can own, build, and deploy their slices of the UI without coordination overhead. Module Federation is the key enabler.',
+      'Strategies for breaking large frontend applications into smaller, independently deployable parts. This allows multiple teams to work in parallel while keeping clear ownership boundaries.',
     concepts: [
       'Module Federation',
       'Shell App',
@@ -58,7 +58,7 @@ export const architectureTopics: ArchitectureTopic[] = [
     icon: 'Server',
     title: 'Backend for Frontend (BFF)',
     summary:
-      'A dedicated API layer shaped for exactly what the frontend needs — no over-fetching, no coupling to mobile contracts, and full ownership of the data-fetching logic sitting with the frontend team.',
+      'An API layer tailored specifically for frontend needs. It helps avoid unnecessary data fetching, simplifies integration with backend services, and allows frontend teams to own their data access logic.',
     concepts: [
       'API Aggregation',
       'Payload Shaping',
@@ -80,7 +80,7 @@ export const architectureTopics: ArchitectureTopic[] = [
     icon: 'PenTool',
     title: 'Design Systems',
     summary:
-      'Building the shared visual language and component library that let multiple product teams move fast without drifting apart — tokens, governance, versioning, and Storybook-driven development.',
+      'Design systems help product teams build consistent interfaces while moving faster. They combine shared design tokens, reusable components, documentation, and governance to keep multiple products aligned.',
     concepts: [
       'Design Tokens',
       'Component API Design',

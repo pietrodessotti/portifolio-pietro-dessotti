@@ -24,7 +24,7 @@ export default function ArchitecturePage() {
       <SectionHeading
         label="Deep Dives"
         title="Architecture"
-        description="The engineering approaches behind scalable frontend systems — patterns, decisions, and trade-offs I apply daily across teams and products."
+        description="How I approach building scalable frontend systems the patterns, decisions, and trade-offs that shape real projects."
         className="mb-16"
       />
 
