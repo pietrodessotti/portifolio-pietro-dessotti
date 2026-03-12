@@ -16,7 +16,7 @@ export default function HomePage() {
       <TechnicalSkillsSection />
       <EngineeringPrinciplesSection />
       <ArticlesPreviewSection />
-      <CaseStudiesPreviewSection />
+      {/* <CaseStudiesPreviewSection /> */}
       <ContactCTASection />
     </>
   )
