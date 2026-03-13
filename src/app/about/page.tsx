@@ -3,6 +3,7 @@ import Image from "next/image";
 import { CheckCircle2 } from "lucide-react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
+import { SiteConfigurator } from "@/components/ui/SiteConfigurator";
 
 export const metadata: Metadata = {
   title: "About",
@@ -84,6 +85,10 @@ export default function AboutPage() {
               <Button href="/articles" variant="secondary" size="sm">
                 Read my articles
               </Button>
+            </div>
+
+            <div className="mt-8 flex justify-center">
+              <SiteConfigurator className="h-36 w-36" />
             </div>
           </div>
         </aside>

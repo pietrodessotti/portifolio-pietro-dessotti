@@ -1,6 +1,6 @@
-import Image from 'next/image'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
+import { HeroAvatar } from '@/components/ui/HeroAvatar'
 import { ArrowRight, BookOpen, Download, Mail } from 'lucide-react'
 
 const highlights = [
@@ -11,31 +11,14 @@ const highlights = [
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden mx-auto max-w-5xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8 lg:py-40">
+    <section className="relative mx-auto max-w-5xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8 lg:py-40">
       {/* Profile image — decorative, right side, fades into background */}
       <div
-        className="pointer-events-none absolute right-0 top-0 hidden h-full w-[420px] select-none lg:block"
+        className="absolute right-0 top-0 hidden h-full w-[420px] select-none overflow-hidden lg:block"
         aria-hidden="true"
       >
         <div className="relative h-full w-full">
-          <Image
-            src="/profile.png"
-            alt=""
-            fill
-            priority
-            sizes="420px"
-            className="object-cover object-top"
-            style={{
-              maskImage:
-                'linear-gradient(to left, transparent 0%, rgba(0,0,0,0.15) 20%, rgba(0,0,0,0.55) 45%, transparent 100%), linear-gradient(to bottom, rgba(0,0,0,0.8) 50%, transparent 100%)',
-              maskComposite: 'intersect',
-              WebkitMaskImage:
-                'linear-gradient(to left, transparent 0%, rgba(0,0,0,0.15) 20%, rgba(0,0,0,0.55) 45%, transparent 100%), linear-gradient(to bottom, rgba(0,0,0,0.8) 50%, transparent 100%)',
-              WebkitMaskComposite: 'source-in',
-              opacity: 0.35,
-              mixBlendMode: 'luminosity',
-            }}
-          />
+          <HeroAvatar />
         </div>
       </div>
 

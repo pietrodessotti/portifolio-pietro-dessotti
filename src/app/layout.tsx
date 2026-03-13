@@ -66,6 +66,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      {/* Restore accent color before first paint — avoids flash */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `try{var a=localStorage.getItem('accent-color');if(a)document.documentElement.dataset.accent=a;}catch(e){}`,
+        }}
+      />
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}
       >
