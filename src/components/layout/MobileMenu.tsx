@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
 import { navLinks } from '@/data/navigation'
-import { cn } from '@/lib/utils'
+import { cn, isActiveLink } from '@/lib/utils'
 
 export function MobileMenu() {
   const [open, setOpen] = useState(false)
@@ -25,9 +25,7 @@ export function MobileMenu() {
         <div className="absolute left-0 right-0 top-full border-b border-[var(--border)] bg-[var(--background)] px-4 py-4 shadow-sm">
           <nav className="flex flex-col gap-1">
             {navLinks.map((link) => {
-              const isActive =
-                pathname === link.href ||
-                (link.href !== '/' && pathname.startsWith(link.href))
+              const isActive = isActiveLink(pathname, link.href)
 
               return (
                 <Link

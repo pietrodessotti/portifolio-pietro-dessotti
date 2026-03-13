@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { navLinks } from '@/data/navigation'
-import { cn } from '@/lib/utils'
+import { cn, isActiveLink } from '@/lib/utils'
 
 export function NavLinks() {
   const pathname = usePathname()
@@ -11,9 +11,7 @@ export function NavLinks() {
   return (
     <nav className="hidden md:flex items-center gap-1">
       {navLinks.slice(1).map((link) => {
-        const isActive =
-          pathname === link.href ||
-          (link.href !== '/' && pathname.startsWith(link.href))
+        const isActive = isActiveLink(pathname, link.href)
 
         return (
           <Link

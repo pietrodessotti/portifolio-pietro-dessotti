@@ -8,16 +8,6 @@ export interface ExperienceItem {
   highlights: string[]
 }
 
-export interface ExperienceItem {
-  role: string
-  company: string
-  companyUrl?: string
-  period: string
-  type?: 'fulltime' | 'freelance'
-  description: string
-  highlights: string[]
-}
-
 export const experience: ExperienceItem[] = [
   {
     role: 'Senior Frontend Engineer',

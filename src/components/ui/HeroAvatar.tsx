@@ -1,36 +1,13 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { useAccent } from '@/hooks/useAccent'
+import { usePointerOpen } from '@/hooks/usePointerOpen'
 import { ACCENTS, AVATAR_MAP } from '@/lib/accent-store'
 
 export function HeroAvatar() {
   const { active, setAccent } = useAccent()
-  const [open, setOpen] = useState(false)
-  const panelRef = useRef<HTMLDivElement>(null)
-
-  // Close on outside click
-  useEffect(() => {
-    if (!open) return
-    function handleClick(e: MouseEvent) {
-      if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
-        setOpen(false)
-      }
-    }
-    document.addEventListener('mousedown', handleClick)
-    return () => document.removeEventListener('mousedown', handleClick)
-  }, [open])
-
-  // Close on Escape
-  useEffect(() => {
-    if (!open) return
-    function handleKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') setOpen(false)
-    }
-    document.addEventListener('keydown', handleKey)
-    return () => document.removeEventListener('keydown', handleKey)
-  }, [open])
+  const { open, setOpen, panelRef } = usePointerOpen()
 
   const src = AVATAR_MAP[active] ?? AVATAR_MAP.blue
 

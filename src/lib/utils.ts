@@ -13,3 +13,7 @@ export function formatDate(dateString: string): string {
 export function formatDateShort(dateString: string): string {
   return format(parseISO(dateString), 'MMM yyyy')
 }
+
+export function isActiveLink(pathname: string, href: string): boolean {
+  return pathname === href || (href !== '/' && pathname.startsWith(href))
+}
