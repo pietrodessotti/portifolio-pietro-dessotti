@@ -44,9 +44,7 @@ function applyAccentToDOM(id: string) {
 }
 
 export const useAccentStore = create<AccentState>((set) => ({
-  active: typeof window !== 'undefined'
-    ? (document.documentElement.dataset.accent || 'blue')
-    : 'blue',
+  active: 'blue',
   setAccent: (id) => {
     applyAccentToDOM(id)
     set({ active: id })
