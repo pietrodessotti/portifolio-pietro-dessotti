@@ -1,5 +1,6 @@
 'use client'
 
+import { useCallback } from 'react'
 import Image from 'next/image'
 import { useAccent } from '@/hooks/useAccent'
 import { usePointerOpen } from '@/hooks/usePointerOpen'
@@ -10,6 +11,13 @@ export function HeroAvatar() {
   const { open, setOpen, panelRef } = usePointerOpen()
 
   const src = AVATAR_MAP[active] ?? AVATAR_MAP.blue
+
+  const toggle = useCallback(() => setOpen((v) => !v), [setOpen])
+
+  const handleSelect = useCallback(
+    (id: string) => { setAccent(id); setOpen(false) },
+    [setAccent, setOpen]
+  )
 
   return (
     <div ref={panelRef} className="absolute inset-0">
@@ -38,16 +46,14 @@ export function HeroAvatar() {
         />
       </div>
 
-      {/* Clickable overlay on avatar body area */}
       <button
-        onClick={() => setOpen((v) => !v)}
+        onClick={toggle}
         aria-label="Customize accent color"
         aria-expanded={open}
         className="pointer-events-auto absolute bottom-0 right-[15%] w-[55%] h-[85%] cursor-pointer focus-visible:outline-none"
         style={{ background: 'transparent' }}
       />
 
-      {/* Color picker popup */}
       {open && (
         <div
           role="dialog"
@@ -64,7 +70,7 @@ export function HeroAvatar() {
               {ACCENTS.map((a) => (
                 <button
                   key={a.id}
-                  onClick={() => { setAccent(a.id); setOpen(false) }}
+                  onClick={() => handleSelect(a.id)}
                   title={a.label}
                   aria-label={`Set accent to ${a.label}`}
                   aria-pressed={active === a.id}

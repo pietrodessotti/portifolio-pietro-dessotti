@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { useAccent } from '@/hooks/useAccent'
 import { AVATAR_MAP } from '@/lib/accent-store'
+import { cn } from '@/lib/utils'
 
 interface Props {
   className?: string
@@ -13,7 +14,7 @@ export function InteractiveAvatar({ className }: Props) {
   const src = AVATAR_MAP[active] ?? AVATAR_MAP.blue
 
   return (
-    <div className={`relative overflow-hidden ${className ?? ''}`} aria-hidden="true">
+    <div className={cn('relative overflow-hidden', className)} aria-hidden="true">
       <Image
         key={src}
         src={src}

@@ -44,15 +44,11 @@ function applyAccentToDOM(id: string) {
 }
 
 export const useAccentStore = create<AccentState>((set) => ({
-  active: 'blue',
+  active: typeof window !== 'undefined'
+    ? (document.documentElement.dataset.accent || 'blue')
+    : 'blue',
   setAccent: (id) => {
     applyAccentToDOM(id)
     set({ active: id })
   },
 }))
-
-/** Call once at the top of the tree to hydrate from localStorage / DOM. */
-export function initAccentStore() {
-  const id = document.documentElement.dataset.accent || 'blue'
-  useAccentStore.setState({ active: id })
-}

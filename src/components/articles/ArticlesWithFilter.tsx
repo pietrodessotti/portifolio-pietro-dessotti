@@ -1,23 +1,35 @@
 'use client'
 
-import { useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { ArticleCard } from './ArticleCard'
 import { cn } from '@/lib/utils'
 import type { Article } from '@/types/article'
 
+interface TagCount {
+  tag: string
+  count: number
+}
+
 interface Props {
   articles: Article[]
-  tags: { tag: string; count: number }[]
+  tags: TagCount[]
 }
 
 export function ArticlesWithFilter({ articles, tags }: Props) {
   const [active, setActive] = useState<string | null>(null)
 
-  const filtered = active ? articles.filter((a) => a.tags.includes(active)) : articles
+  const filtered = useMemo(
+    () => (active ? articles.filter((a) => a.tags.includes(active)) : articles),
+    [active, articles]
+  )
+
+  const handleTagClick = useCallback(
+    (tag: string) => setActive((prev) => (prev === tag ? null : tag)),
+    []
+  )
 
   return (
     <>
-      {/* Key Concepts */}
       <div className="mb-12">
         <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-[var(--accent)]">
           Key Concepts
@@ -39,7 +51,7 @@ export function ArticlesWithFilter({ articles, tags }: Props) {
           {tags.map(({ tag, count }) => (
             <button
               key={tag}
-              onClick={() => setActive(active === tag ? null : tag)}
+              onClick={() => handleTagClick(tag)}
               className={cn(
                 'rounded-full border px-4 py-1.5 text-sm font-medium transition-colors duration-150',
                 active === tag
@@ -54,7 +66,6 @@ export function ArticlesWithFilter({ articles, tags }: Props) {
         </div>
       </div>
 
-      {/* Articles grid */}
       {filtered.length === 0 ? (
         <p className="text-[var(--muted)]">No articles found for this topic.</p>
       ) : (

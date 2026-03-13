@@ -1,5 +1,6 @@
 'use client'
 
+import { useCallback } from 'react'
 import { InteractiveAvatar } from './InteractiveAvatar'
 import { useAccent } from '@/hooks/useAccent'
 import { usePointerOpen } from '@/hooks/usePointerOpen'
@@ -13,10 +14,11 @@ export function SiteConfigurator({ className }: Props) {
   const { open, setOpen, panelRef } = usePointerOpen()
   const { active, setAccent } = useAccent()
 
+  const toggle = useCallback(() => setOpen((v) => !v), [setOpen])
+
   return (
     <div ref={panelRef} className="inline-flex justify-center">
       <div className="relative">
-        {/* Hint arrow — pulsing chevron above head when closed */}
         {!open && (
           <span
             className="pointer-events-none absolute left-1/2 -translate-x-1/2 flex flex-col items-center gap-0.5"
@@ -33,7 +35,7 @@ export function SiteConfigurator({ className }: Props) {
         )}
 
         <button
-          onClick={() => setOpen((v) => !v)}
+          onClick={toggle}
           aria-label="Customize accent color"
           aria-expanded={open}
           className="block cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] rounded-full"
