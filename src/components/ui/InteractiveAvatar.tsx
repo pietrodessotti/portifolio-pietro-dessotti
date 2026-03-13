@@ -1,21 +1,16 @@
-import Image from 'next/image'
+'use client'
 
-const AVATAR_MAP: Record<string, string> = {
-  blue:    '/avatar-blue.png',
-  violet:  '/avatar-violet.png',
-  emerald: '/avatar-emerald.png',
-  amber:   '/avatar-amber.png',
-  rose:    '/avatar-rose.png',
-  cyan:    '/avatar-cyan.png',
-}
+import Image from 'next/image'
+import { useAccent } from '@/hooks/useAccent'
+import { AVATAR_MAP } from '@/lib/accent-store'
 
 interface Props {
   className?: string
-  accent?: string
 }
 
-export function InteractiveAvatar({ className, accent = 'blue' }: Props) {
-  const src = AVATAR_MAP[accent] ?? AVATAR_MAP.blue
+export function InteractiveAvatar({ className }: Props) {
+  const { active } = useAccent()
+  const src = AVATAR_MAP[active] ?? AVATAR_MAP.blue
 
   return (
     <div className={`relative overflow-hidden ${className ?? ''}`} aria-hidden="true">

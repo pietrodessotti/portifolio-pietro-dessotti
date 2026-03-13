@@ -2,53 +2,13 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
-
-const AVATAR_MAP: Record<string, string> = {
-  blue:    '/avatar-blue.png',
-  violet:  '/avatar-violet.png',
-  emerald: '/avatar-emerald.png',
-  amber:   '/avatar-amber.png',
-  rose:    '/avatar-rose.png',
-  cyan:    '/avatar-cyan.png',
-}
-
-const ACCENTS = [
-  { id: 'blue',    label: 'Blue',    preview: '#5486b7' },
-  // { id: 'violet',  label: 'Violet',  preview: '#8b5cf6' },  // avatar WIP
-  // { id: 'emerald', label: 'Emerald', preview: '#10b981' },  // avatar WIP
-  { id: 'amber',   label: 'Amber',   preview: '#f59e0b' },
-  { id: 'rose',    label: 'Rose',    preview: '#f43f5e' },
-  { id: 'cyan',    label: 'Cyan',    preview: '#06b6d4' },
-]
-
-function applyAccent(id: string) {
-  const el = document.documentElement
-  if (id === 'blue') {
-    delete el.dataset.accent
-  } else {
-    el.dataset.accent = id
-  }
-  try { localStorage.setItem('accent-color', id === 'blue' ? '' : id) } catch {}
-}
+import { useAccent } from '@/hooks/useAccent'
+import { ACCENTS, AVATAR_MAP } from '@/lib/accent-store'
 
 export function HeroAvatar() {
-  const [accent, setAccent] = useState('blue')
+  const { active, setAccent } = useAccent()
   const [open, setOpen] = useState(false)
   const panelRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const initial = document.documentElement.dataset.accent || 'blue'
-    setAccent(initial)
-
-    const observer = new MutationObserver(() => {
-      setAccent(document.documentElement.dataset.accent || 'blue')
-    })
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['data-accent'],
-    })
-    return () => observer.disconnect()
-  }, [])
 
   // Close on outside click
   useEffect(() => {
@@ -72,17 +32,10 @@ export function HeroAvatar() {
     return () => document.removeEventListener('keydown', handleKey)
   }, [open])
 
-  function select(id: string) {
-    setAccent(id)
-    applyAccent(id)
-    setOpen(false)
-  }
-
-  const src = AVATAR_MAP[accent] ?? AVATAR_MAP.blue
+  const src = AVATAR_MAP[active] ?? AVATAR_MAP.blue
 
   return (
     <div ref={panelRef} className="absolute inset-0">
-      {/* Wrapper with key — triggers animation on src change without touching Image directly */}
       <div
         key={src}
         className="absolute inset-0"
@@ -134,14 +87,14 @@ export function HeroAvatar() {
               {ACCENTS.map((a) => (
                 <button
                   key={a.id}
-                  onClick={() => select(a.id)}
+                  onClick={() => { setAccent(a.id); setOpen(false) }}
                   title={a.label}
                   aria-label={`Set accent to ${a.label}`}
-                  aria-pressed={accent === a.id}
+                  aria-pressed={active === a.id}
                   style={{ backgroundColor: a.preview }}
                   className="h-7 w-7 rounded-full transition-transform duration-100 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
                 >
-                  {accent === a.id && (
+                  {active === a.id && (
                     <span className="flex h-full w-full items-center justify-center">
                       <svg viewBox="0 0 12 12" className="h-3 w-3" fill="none">
                         <path d="M2 6l3 3 5-5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
