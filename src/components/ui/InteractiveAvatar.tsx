@@ -1,19 +1,33 @@
 import Image from 'next/image'
 
-interface Props {
-  className?: string
+const AVATAR_MAP: Record<string, string> = {
+  blue:    '/avatar-blue.png',
+  violet:  '/avatar-violet.png',
+  emerald: '/avatar-emerald.png',
+  amber:   '/avatar-amber.png',
+  rose:    '/avatar-rose.png',
+  cyan:    '/avatar-cyan.png',
 }
 
-export function InteractiveAvatar({ className }: Props) {
+interface Props {
+  className?: string
+  accent?: string
+}
+
+export function InteractiveAvatar({ className, accent = 'blue' }: Props) {
+  const src = AVATAR_MAP[accent] ?? AVATAR_MAP.blue
+
   return (
     <div className={`relative overflow-hidden ${className ?? ''}`} aria-hidden="true">
       <Image
-        src="/avatar3.png"
+        key={src}
+        src={src}
         alt="Pietro Dessotti"
         fill
-        sizes="(max-width: 1024px) 80px, 112px"
+        sizes="(max-width: 1024px) 160px, 200px"
         className="object-contain"
         draggable={false}
+        style={{ animation: 'avatar-swap 0.3s ease both' }}
       />
     </div>
   )

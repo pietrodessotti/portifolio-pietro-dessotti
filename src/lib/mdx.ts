@@ -61,6 +61,19 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
   }
 }
 
+export async function getAllTags(): Promise<{ tag: string; count: number }[]> {
+  const articles = await getAllArticles()
+  const counts: Record<string, number> = {}
+  for (const article of articles) {
+    for (const tag of article.tags) {
+      counts[tag] = (counts[tag] ?? 0) + 1
+    }
+  }
+  return Object.entries(counts)
+    .map(([tag, count]) => ({ tag, count }))
+    .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag))
+}
+
 export async function getFeaturedArticles(limit = 3): Promise<Article[]> {
   const articles = await getAllArticles()
   const featured = articles.filter((a) => a.featured)

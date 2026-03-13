@@ -7,6 +7,7 @@ import { SITE_URL } from '@/lib/site'
 import { MDXRenderer } from '@/components/mdx/MDXRenderer'
 import { Tag } from '@/components/ui/Tag'
 import { formatDate } from '@/lib/utils'
+import { InteractiveAvatar } from '@/components/ui/InteractiveAvatar'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -119,6 +120,15 @@ export default async function ArticlePage({ params }: Props) {
             <Clock className="h-4 w-4" />
             {article.readingTime}
           </span>
+        </div>
+
+        {/* Author */}
+        <div className="mt-8 flex items-center gap-3 border-t border-[var(--border)] pt-6">
+          <InteractiveAvatar className="h-14 w-14 shrink-0" />
+          <div>
+            <p className="text-sm font-semibold text-[var(--foreground)]">Pietro Dessotti</p>
+            <p className="text-xs text-[var(--muted)]">Senior Frontend Engineer at Zenvia</p>
+          </div>
         </div>
       </header>
 

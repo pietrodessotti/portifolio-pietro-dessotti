@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import { getAllArticles } from '@/lib/mdx'
-import { ArticleCard } from '@/components/articles/ArticleCard'
+import { getAllArticles, getAllTags } from '@/lib/mdx'
+import { ArticlesWithFilter } from '@/components/articles/ArticlesWithFilter'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 
 export const metadata: Metadata = {
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 }
 
 export default async function ArticlesPage() {
-  const articles = await getAllArticles()
+  const [articles, tags] = await Promise.all([getAllArticles(), getAllTags()])
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
@@ -24,11 +24,7 @@ export default async function ArticlesPage() {
       {articles.length === 0 ? (
         <p className="text-[var(--muted)]">No articles published yet. Check back soon.</p>
       ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {articles.map((article) => (
-            <ArticleCard key={article.slug} article={article} />
-          ))}
-        </div>
+        <ArticlesWithFilter articles={articles} tags={tags} />
       )}
     </div>
   )
