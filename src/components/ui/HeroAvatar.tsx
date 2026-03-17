@@ -5,12 +5,13 @@ import Image from 'next/image'
 import { useAccent } from '@/hooks/useAccent'
 import { usePointerOpen } from '@/hooks/usePointerOpen'
 import { ACCENTS, AVATAR_MAP } from '@/lib/accent-store'
+import { useCrossFade } from '@/hooks/useCrossFade'
 
 export function HeroAvatar() {
   const { active, setAccent } = useAccent()
   const { open, setOpen, panelRef } = usePointerOpen()
 
-  const src = AVATAR_MAP[active] ?? AVATAR_MAP.blue
+  const { current, prev } = useCrossFade(AVATAR_MAP[active] ?? AVATAR_MAP.blue, 400)
 
   const toggle = useCallback(() => setOpen((v) => !v), [setOpen])
 
@@ -21,13 +22,38 @@ export function HeroAvatar() {
 
   return (
     <div ref={panelRef} className="absolute inset-0">
+      {prev && (
+        <div
+          key={prev}
+          className="absolute inset-0"
+          style={{ animation: 'avatar-fade-out 0.4s ease forwards' }}
+        >
+          <Image
+            src={prev}
+            alt=""
+            fill
+            sizes="420px"
+            className="object-cover object-top"
+            style={{
+              maskImage:
+                'linear-gradient(to left, transparent 0%, rgba(0,0,0,0.15) 20%, rgba(0,0,0,0.55) 45%, transparent 100%), linear-gradient(to bottom, rgba(0,0,0,0.8) 50%, transparent 100%)',
+              maskComposite: 'intersect',
+              WebkitMaskImage:
+                'linear-gradient(to left, transparent 0%, rgba(0,0,0,0.15) 20%, rgba(0,0,0,0.55) 45%, transparent 100%), linear-gradient(to bottom, rgba(0,0,0,0.8) 50%, transparent 100%)',
+              WebkitMaskComposite: 'source-in',
+              opacity: 0.35,
+              mixBlendMode: 'luminosity',
+            }}
+          />
+        </div>
+      )}
       <div
-        key={src}
+        key={current}
         className="absolute inset-0"
         style={{ animation: 'avatar-swap 0.4s ease both' }}
       >
         <Image
-          src={src}
+          src={current}
           alt=""
           fill
           priority

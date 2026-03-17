@@ -85,6 +85,11 @@ html {
   to   { opacity: 1; transform: scale(1); }
 }
 
+@keyframes avatar-fade-out {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(1.02); }
+}
+
 /* Character speech bubble pop-in */
 @keyframes bubble-in {
   from { opacity: 0; transform: scale(0.85) translateX(-8px); }
